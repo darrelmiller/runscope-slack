@@ -1,1 +1,1 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="HttpCheck.Global" Language="C#" %>
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="RunscopeSlack.Global" Language="C#" %>

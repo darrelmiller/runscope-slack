@@ -7,7 +7,7 @@ using System.Web.Security;
 using System.Web.SessionState;
 using HttpCheckApi;
 
-namespace HttpCheck
+namespace RunscopeSlack
 {
     public class Global : System.Web.HttpApplication
     {

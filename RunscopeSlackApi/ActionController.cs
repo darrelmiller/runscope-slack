@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
 
-namespace HttpCheckApi
+namespace RunscopeSlackApi
 {
     public class ActionController : ApiController
     {
-        public IHttpActionResult Post()
+
+        public IHttpActionResult Post(FormDataCollection formData)
         {
+            var text = formData["text"];
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
-                Content = new StringContent("{ \"text\" : \"action completed\" }", Encoding.UTF8,"application/json")
+                Content = new StringContent("{ \"text\" : \"action completed : " + text + " \" }", Encoding.UTF8,"application/json")
             });
         }
     }
