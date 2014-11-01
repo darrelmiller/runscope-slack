@@ -27,6 +27,8 @@ namespace RunscopeSlackApi
 
             BucketName = commandNode.ChildNode("bucket").Text;
             TestName = commandNode.ChildNode("testphrase").ChildNode("test").Text;
+
+            // Get parameters
         }
 
         public async Task Execute()
@@ -39,6 +41,8 @@ namespace RunscopeSlackApi
 
             var triggerLink = _clientState.GetTestTriggerLinkByTestName(TestName);
             
+            // Apply parameters to triggerLink
+
             await _clientState.FollowLinkAsync(triggerLink);
 
 
@@ -57,7 +61,7 @@ namespace RunscopeSlackApi
             Method = HttpMethod.Post;
             //runscope_notification_url
             AddNonTemplatedParametersToQueryString = true;
-            SetParameter("runscope_notification_url", "https://runscope-slack.azurewebsites.net/notify");
+            SetParameter("runscope_notification_url", "https://runscope--slack-azurewebsites-net-t6so3gtoys0d.runscope.net/notify");
         }
     }
 
