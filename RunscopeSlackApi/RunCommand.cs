@@ -77,7 +77,7 @@ namespace RunscopeSlackApi
           
             //runscope_notification_url
             AddNonTemplatedParametersToQueryString = true;
-            SetParameter("runscope_notification_url", "https://runscope--slack-azurewebsites-net-t6so3gtoys0d.runscope.net/notify");
+            SetParameter("runscope_notification_url", "https://runscope-slack.azurewebsites.net/notify");
         }
     }
 
