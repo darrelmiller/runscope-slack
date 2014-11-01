@@ -60,15 +60,27 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tavis.HttpHeaders">
+      <HintPath>..\lib\Tavis.HttpHeaders.dll</HintPath>
+    </Reference>
+    <Reference Include="Tavis.Link">
+      <HintPath>..\packages\Tavis.Link.0.5.2\lib\portable-win+net40+sl40+wp71\Tavis.Link.dll</HintPath>
+    </Reference>
+    <Reference Include="Tavis.UriTemplates">
+      <HintPath>..\packages\Tavis.UriTemplates.0.4\lib\Net35\Tavis.UriTemplates.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionController.cs" />
+    <Compile Include="ClientState.cs" />
     <Compile Include="EchoController.cs" />
     <Compile Include="HomeController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RunCommand.cs" />
     <Compile Include="WebApiConfig.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
