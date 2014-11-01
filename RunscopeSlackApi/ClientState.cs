@@ -48,7 +48,7 @@ namespace RunscopeSlackApi
             var data = BucketList.Property("data").Value as JArray;
             var testsUrl =
                 data.Cast<JObject>()
-                    .Where(b => (String) b.Property("name").Value == bucketName)
+                    .Where(b => ((String) b.Property("name").Value).ToLowerInvariant() == bucketName)
                     .Select(b => (string)b.Property("tests_url").Value).FirstOrDefault();
 
             if (testsUrl == null) throw new Exception("Cannot find bucket named " + bucketName);
