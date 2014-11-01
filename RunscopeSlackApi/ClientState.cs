@@ -58,7 +58,8 @@ namespace RunscopeSlackApi
 
         internal async Task FollowLinkAsync(Link link)
         {
-            var response = await _httpClient.SendAsync(link.CreateRequest());
+            var request = link.CreateRequest();
+            var response = await _httpClient.SendAsync(request);
             CheckResponse(response);
 
             switch (link.Relation)

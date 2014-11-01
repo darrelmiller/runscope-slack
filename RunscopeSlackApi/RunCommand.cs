@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using Runscope.Links;
 using Runscope.Messages;
 using Tavis;
+using Tavis.Headers.Elements;
 
 namespace RunscopeSlackApi
 {
@@ -20,13 +21,24 @@ namespace RunscopeSlackApi
         private readonly ClientState _clientState;
         public string BucketName { get; set; }
         public string TestName { get; set; }
-
+        public List<Parameter> Parameters { get; set; }  
         public RunCommand(ParseNode commandNode, ClientState clientState)
         {
             _clientState = clientState;
 
             BucketName = commandNode.ChildNode("bucket").Text;
             TestName = commandNode.ChildNode("testphrase").ChildNode("test").Text;
+            var paramlist = commandNode.ChildNode("paramlist");
+            if (paramlist.ChildNodes != null)
+            {
+                Parameters = paramlist.ChildNode("parameters").ChildNodes
+                    .Select(Parameter.Create).ToList();
+
+            }
+            else
+            {
+                Parameters = new List<Parameter>();
+            }
 
             // Get parameters
         }
@@ -42,6 +54,10 @@ namespace RunscopeSlackApi
             var triggerLink = _clientState.GetTestTriggerLinkByTestName(TestName);
             
             // Apply parameters to triggerLink
+            foreach (var parameter in Parameters)
+            {
+                triggerLink.SetParameter(parameter.Name,parameter.Value);
+            }
 
             await _clientState.FollowLinkAsync(triggerLink);
 
@@ -58,7 +74,7 @@ namespace RunscopeSlackApi
     {
         public TriggerLink()
         {
-            Method = HttpMethod.Post;
+          
             //runscope_notification_url
             AddNonTemplatedParametersToQueryString = true;
             SetParameter("runscope_notification_url", "https://runscope--slack-azurewebsites-net-t6so3gtoys0d.runscope.net/notify");
