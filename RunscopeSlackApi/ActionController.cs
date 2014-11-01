@@ -110,7 +110,10 @@ namespace RunscopeSlackApi
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
-            _value.WriteTo(new JsonTextWriter(new StreamWriter(stream)));
+            var writer = new JsonTextWriter(new StreamWriter(stream));
+            _value.WriteTo(writer);
+            writer.Flush();
+            
             return Task.FromResult(0);
         }
 
