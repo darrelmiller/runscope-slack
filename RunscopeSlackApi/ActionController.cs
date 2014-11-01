@@ -58,8 +58,16 @@ namespace RunscopeSlackApi
                 case "run":
                     var clientState = new ClientState(CreateHttpClient());        
                     var runCommand = new RunCommand(parseNodes,clientState);
-                    await runCommand.Execute();
-                    return new SlackResult(runCommand.Output);
+                    try
+                    {
+                        await runCommand.Execute();
+                        return new SlackResult(runCommand.Output);
+                    }
+                    catch (Exception ex)
+                    {
+                        return new SlackResult("Run command failed - " + runCommand.Output);
+                        
+                    }
                     break;
                             
                 default:

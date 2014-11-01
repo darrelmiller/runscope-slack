@@ -55,6 +55,9 @@ namespace RunscopeSlackApi
         public TriggerLink()
         {
             Method = HttpMethod.Post;
+            //runscope_notification_url
+            AddNonTemplatedParametersToQueryString = true;
+            SetParameter("runscope_notification_url", "https://runscope-slack.azurewebsites.net/notify");
         }
     }
 
@@ -85,6 +88,7 @@ namespace RunscopeSlackApi
         {
             Relation = "Tests";
             Target = new Uri("/buckets/{bucket_key}/radar", UriKind.Relative);
+            
         }
 
         public async Task<JObject> ParseResponse(HttpResponseMessage response)

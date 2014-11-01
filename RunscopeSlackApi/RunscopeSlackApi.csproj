@@ -75,6 +75,7 @@
     <Compile Include="ClientState.cs" />
     <Compile Include="EchoController.cs" />
     <Compile Include="HomeController.cs" />
+    <Compile Include="NotifyController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunCommand.cs" />
     <Compile Include="WebApiConfig.cs" />
