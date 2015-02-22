@@ -1,20 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Runtime.Remoting.Messaging;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Http;
 using System.Web.Security;
 using System.Web.SessionState;
 using HttpCheckApi;
+using RunscopeSlackApi;
 
 namespace RunscopeSlack
 {
     public class Global : System.Web.HttpApplication
     {
-
         protected void Application_Start(object sender, EventArgs e)
+        
         {
+
+            
+            GlobalConfiguration.Configuration.MessageHandlers.Add(new SetupMessageHandler(Server.MapPath("~/App_Data/ApiKeys.json")));
             WebApiConfig.Register(GlobalConfiguration.Configuration);
+            
         }
 
         protected void Session_Start(object sender, EventArgs e)

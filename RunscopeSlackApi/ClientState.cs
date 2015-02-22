@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Runscope;
 using Runscope.Links;
 using Runscope.Messages;
 using Tavis;
@@ -15,8 +16,8 @@ namespace RunscopeSlackApi
     {
         private readonly HttpClient _httpClient;
 
-        public JObject BucketList { get; set; }
-        public JObject TestsList { get; set; }
+        public List<Bucket> BucketList { get; set; }
+        public List<Test> TestsList { get; set; }
 
         public ClientState(HttpClient httpClient)
         {
@@ -25,9 +26,10 @@ namespace RunscopeSlackApi
 
         public async Task FollowLinkAsync(BucketsLink bucketsLink)
         {
-            var response = await _httpClient.SendAsync(bucketsLink.BuildGetRequest());
+            var response = await _httpClient.FollowLinkAsync(bucketsLink);
             CheckResponse(response);
-            BucketList = await bucketsLink.ParseResponse(response);
+            var doc = await response.Content.ReadAsRunscopeApiDocument<Bucket>(Bucket.Parse);
+            BucketList = doc.DataList;
         }
 
 
@@ -45,14 +47,9 @@ namespace RunscopeSlackApi
 
         internal TestsLink GetBucketTestsLinkByBucketName(string bucketName)
         {
-            var data = BucketList.Property("data").Value as JArray;
-            var testsUrl =
-                data.Cast<JObject>()
-                    .Where(b => ((String) b.Property("name").Value).ToLowerInvariant() == bucketName)
-                    .Select(b => (string)b.Property("tests_url").Value).FirstOrDefault();
-
-            if (testsUrl == null) throw new Exception("Cannot find bucket named " + bucketName);
-            return new TestsLink() {Target = new Uri(testsUrl)};
+            var bucket = BucketList.First(b => b.Name == bucketName);
+            if (bucket == null) throw new Exception("Cannot find bucket named " + bucketName);
+            return bucket.Tests;
 
         }
 
@@ -66,7 +63,8 @@ namespace RunscopeSlackApi
             {
                 case "Tests":
                     var testslink = link as TestsLink;
-                    TestsList = await testslink.ParseResponse(response);
+                    var doc = await response.Content.ReadAsRunscopeApiDocument<Test>(Test.Parse);
+                    TestsList = doc.DataList;
 
                     break;
 
@@ -75,17 +73,11 @@ namespace RunscopeSlackApi
 
 
 
-        internal TriggerLink GetTestTriggerLinkByTestName(string testName)
+        internal TestTriggerLink GetTestTriggerLinkByTestName(string testName)
         {
-            var data = TestsList.Property("data").Value as JArray;
-            var triggerUrl =
-                data.Cast<JObject>()
-                    .Where(b => ((String)b.Property("name").Value).ToLowerInvariant() == testName)
-                    .Select(b => (string)b.Property("trigger_url").Value).FirstOrDefault();
-
-            if (triggerUrl == null) throw new Exception("Cannot find test named " + testName);
-
-            return new TriggerLink() { Target = new Uri(triggerUrl) }; 
+            var data = TestsList.FirstOrDefault(t => t.Name == "testName");
+            if (data == null) throw new Exception("Cannot find test named " + testName);
+            return data.TestTrigger;
         }
     }
 }
