@@ -12,14 +12,14 @@
     <body>
         <h1>Setup</h1>
         <p>Enter information here and it will be saved in a config file.</p>
-        <form id="test" action="/setup" method="post">
+        <form id="test" action="/privatedataform" method="post">
             <div>
                 <label for="txtRunscopeApiKey">Runscope API Key</label>
-                <input id="txtRunscopeApiKey" name="apikey" type="text" />
+                <input id="txtRunscopeApiKey" name="RunscopeApiKey" type="text" />
             </div>
             <div>
                 <label for="txtSlackWebhook">Slack Webhook</label>
-                <input id="txtSlackWebhook" name="slackwebhook" type="text" />
+                <input id="txtSlackWebhook" name="SlackNotifyUrl" type="text" />
             </div>
             <input type="submit" value="Save settings" />
         </form>

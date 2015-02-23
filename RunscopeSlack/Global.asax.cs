@@ -22,7 +22,7 @@ namespace RunscopeSlack
         {
 
             
-            GlobalConfiguration.Configuration.MessageHandlers.Add(new SetupMessageHandler(Server.MapPath("~/App_Data/ApiKeys.json")));
+            GlobalConfiguration.Configuration.MessageHandlers.Add(new PrivateDataMessageHandler(Server.MapPath("~/App_Data/privatedata.json")));
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             
         }

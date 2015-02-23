@@ -28,7 +28,7 @@ namespace RunscopeSlackApi
             
             var data = new[] { new KeyValuePair<string, string>("payload", jText.ToString()) };
 
-            var privateData = Request.GetPrivateConfig();
+            var privateData = Request.GetPrivateData();
             await httpClient.PostAsync(privateData.SlackNotifyUrl, new FormUrlEncodedContent(data));
 
             return Ok();

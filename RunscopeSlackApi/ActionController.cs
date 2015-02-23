@@ -50,7 +50,7 @@ namespace RunscopeSlackApi
             switch (verb.Text)
             {
                 case "run":
-                    var clientState = new ClientState(HttpClientFactory.CreateHttpClient(Request.GetPrivateConfig()));        
+                    var clientState = new ClientState(HttpClientFactory.CreateHttpClient(Request.GetPrivateData()));        
                     var runCommand = new RunCommand(parseNodes,clientState);
                     try
                     {
