@@ -11,7 +11,7 @@ namespace RunscopeSlackApi
 {
     public class ActionController : ApiController
     {
-       
+       // test update
 
         public async Task<IHttpActionResult> Post(FormDataCollection formData)
         {
@@ -35,7 +35,7 @@ namespace RunscopeSlackApi
                     }
                     catch (Exception ex)
                     {
-                        return new SlackResult("Run command failed - " + runCommand.Output);
+                        return new SlackResult("Run command failed - " + (!String.IsNullOrEmpty(runCommand.Output)  ? runCommand.Output : ex.Message ));
                         
                     }
                     break;

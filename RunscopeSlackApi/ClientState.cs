@@ -12,7 +12,7 @@ using Tavis;
 
 namespace RunscopeSlackApi
 {
-    public class ClientState
+    public class ClientState : IResponseHandler
     {
         private readonly HttpClient _httpClient;
 
@@ -24,60 +24,53 @@ namespace RunscopeSlackApi
             _httpClient = httpClient;
         }
 
-        public async Task FollowLinkAsync(BucketsLink bucketsLink)
-        {
-            var response = await _httpClient.FollowLinkAsync(bucketsLink);
-            CheckResponse(response);
-            var doc = await response.Content.ReadAsRunscopeApiDocument<Bucket>(Bucket.Parse);
-            BucketList = doc.DataList;
-        }
-
-
-        private void CheckResponse(HttpResponseMessage response)
-        {
-            if ((int)response.StatusCode >= 500)
-            {
-                throw new Exception("Cannot connect to Runscope API");
-            }
-            if ((int)response.StatusCode >= 400)
-            {
-                throw new Exception("Runscope API didn't like our request");
-            }
-        }
 
         internal TestsLink GetBucketTestsLinkByBucketName(string bucketName)
         {
-            var bucket = BucketList.First(b => b.Name == bucketName);
+            var bucket = BucketList.First(b => string.Compare(b.Name,bucketName,StringComparison.CurrentCultureIgnoreCase) == 0);
             if (bucket == null) throw new Exception("Cannot find bucket named " + bucketName);
             return bucket.Tests;
 
         }
 
-        internal async Task FollowLinkAsync(Link link)
-        {
-            var request = link.CreateRequest();
-            var response = await _httpClient.SendAsync(request);
-            CheckResponse(response);
-
-            switch (link.Relation)
-            {
-                case "Tests":
-                    var testslink = link as TestsLink;
-                    var doc = await response.Content.ReadAsRunscopeApiDocument<Test>(Test.Parse);
-                    TestsList = doc.DataList;
-
-                    break;
-
-            }
-        }
-
-
-
         internal TestTriggerLink GetTestTriggerLinkByTestName(string testName)
         {
-            var data = TestsList.FirstOrDefault(t => t.Name == "testName");
+            var data = TestsList.FirstOrDefault(t => String.Compare(t.Name, testName, StringComparison.CurrentCultureIgnoreCase) == 0);
             if (data == null) throw new Exception("Cannot find test named " + testName);
             return data.TestTrigger;
+        }
+    
+
+        public async Task<HttpResponseMessage> HandleResponseAsync(string linkRelation, HttpResponseMessage responseMessage)
+        {
+            if ((int)responseMessage.StatusCode >= 500)
+            {
+                throw new Exception("Cannot connect to Runscope API");
+            }
+            if ((int)responseMessage.StatusCode >= 400)
+            {
+                throw new Exception("Runscope API didn't like our request");
+            }
+
+            switch (linkRelation)
+            {
+                case "https://runscope.com/rels/tests":
+                    var doc = await responseMessage.Content.ReadAsRunscopeApiDocumentAsync<Test>(Test.Parse);
+                    TestsList = doc.DataList;
+                    break;
+
+                case "https://runscope.com/rels/buckets":
+                case "urn:runscope:buckets":
+                    var bucketsDoc = await responseMessage.Content.ReadAsRunscopeApiDocumentAsync<Bucket>(Bucket.Parse);
+                    BucketList = bucketsDoc.DataList;
+                    break;
+            }
+            return responseMessage;
+        }
+
+        internal Task FollowLinkAsync(IRequestFactory link)
+        {
+            return _httpClient.FollowLinkAsync(link, this);
         }
     }
 }

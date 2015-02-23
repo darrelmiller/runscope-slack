@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using LinkTests;
-using Newtonsoft.Json.Linq;
 using Runscope.Links;
-using Runscope.Messages;
-using Tavis;
 using Tavis.Headers.Elements;
 using Tavis.Parser;
 
