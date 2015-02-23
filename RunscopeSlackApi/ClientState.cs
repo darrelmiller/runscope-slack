@@ -63,6 +63,7 @@ namespace RunscopeSlackApi
                 case "urn:runscope:buckets":
                     var bucketsDoc = await responseMessage.Content.ReadAsRunscopeApiDocumentAsync<Bucket>(Bucket.Parse);
                     BucketList = bucketsDoc.DataList;
+                    
                     break;
             }
             return responseMessage;
