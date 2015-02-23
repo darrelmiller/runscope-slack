@@ -7,52 +7,68 @@ using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using Headers.Parser;
 using LinkTests;
 using Newtonsoft.Json.Linq;
 using Runscope.Links;
 using Runscope.Messages;
 using Tavis;
 using Tavis.Headers.Elements;
+using Tavis.Parser;
 
 namespace RunscopeSlackApi
 {
     public class RunCommand
     {
-        private readonly ClientState _clientState;
+        
         public string BucketName { get; set; }
         public string TestName { get; set; }
         public List<Parameter> Parameters { get; set; }  
-        public RunCommand(ParseNode commandNode, ClientState clientState)
+        public RunCommand(ParseNode commandNode)
         {
-            _clientState = clientState;
 
-            BucketName = commandNode.ChildNode("bucket").Text.Replace("\"","");
-            TestName = commandNode.ChildNode("testphrase").ChildNode("test").Text.Replace("\"", ""); ;
-            var paramlist = commandNode.ChildNode("paramlist");
-            if (paramlist.ChildNodes != null)
+            foreach (var childNode in commandNode.ChildNodes)
             {
-                Parameters = paramlist.ChildNode("parameters").ChildNodes
-                    .Select(Parameter.Create).ToList();
+                switch (childNode.Expression.Identifier)
+                {
+                    case "tbucket":
+                    case "qbucket":
+                        BucketName = childNode.Text;
+                        break;
+                    case "testphrase":
+                        if (childNode.ChildNode("qtest") != null)
+                        {
+                            TestName = childNode.ChildNode("qtest").Text;
+                        }
+                        else
+                        {
+                            TestName = childNode.ChildNode("ttest").Text;
+                        }
+                        break;
+                    case "paramlist":
+                        if (childNode.ChildNodes != null)
+                        {
+                            Parameters = childNode.ChildNode("parameters").ChildNodes
+                                .Select(Parameter.Create).ToList();
+                        }
+                        else
+                        {
+                            Parameters = new List<Parameter>();
+                        }
+                        break;
 
+                }
             }
-            else
-            {
-                Parameters = new List<Parameter>();
             }
 
-            // Get parameters
-        }
-
-        public async Task Execute()
+        public async Task Execute(ClientState clientState)
         {
-            await _clientState.FollowLinkAsync(new BucketsLink());  // Retrieve the list of buckets
+            await clientState.FollowLinkAsync(new BucketsLink());  // Retrieve the list of buckets
 
-            var testsLink = _clientState.GetBucketTestsLinkByBucketName(BucketName);
+            var testsLink = clientState.GetBucketTestsLinkByBucketName(BucketName);
         
-            await _clientState.FollowLinkAsync(testsLink);
+            await clientState.FollowLinkAsync(testsLink);
 
-            var triggerLink = _clientState.GetTestTriggerLinkByTestName(TestName);
+            var triggerLink = clientState.GetTestTriggerLinkByTestName(TestName);
             var triggerparams = new Dictionary<string, string> 
             {{"runscope_notification_url", "https://runscope-slack.azurewebsites.net/notify"}};
 
@@ -63,7 +79,7 @@ namespace RunscopeSlackApi
             }
             triggerLink.Target = triggerLink.Target.AddToQuery(triggerparams);
 
-            await _clientState.FollowLinkAsync(triggerLink);
+            await clientState.FollowLinkAsync(triggerLink);
 
 
             Output = "Tests for bucket " + BucketName + " launched successfully";

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunscopeSlack", "RunscopeSlack\RunscopeSlack.csproj", "{4F0C417A-2424-42A9-BAFD-0434AFED155D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunscopeSlackApi", "RunscopeSlackApi\RunscopeSlackApi.csproj", "{909836DF-A7A8-49AF-AB9F-97E24C0CDEA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunscopeSlackApiTests", "RunscopeSlackApiTests\RunscopeSlackApiTests.csproj", "{72751AC3-325F-4646-AE81-25F8FD24A3F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{909836DF-A7A8-49AF-AB9F-97E24C0CDEA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{909836DF-A7A8-49AF-AB9F-97E24C0CDEA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{909836DF-A7A8-49AF-AB9F-97E24C0CDEA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72751AC3-325F-4646-AE81-25F8FD24A3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72751AC3-325F-4646-AE81-25F8FD24A3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72751AC3-325F-4646-AE81-25F8FD24A3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72751AC3-325F-4646-AE81-25F8FD24A3F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

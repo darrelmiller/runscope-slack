@@ -5,37 +5,13 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Headers;
-using Headers.Parser;
-using Tavis.Headers.Elements;
+using Tavis.Parser;
 
 namespace RunscopeSlackApi
 {
     public class ActionController : ApiController
     {
-        public static IExpression CommandSyntax = new Expression("cmd")
-            {
-                new Ows(),
-                new Literal("runscope:"),
-                new Ows(),
-                new Headers.Token("verb"),
-                new Rws(),
-                new Headers.QuotedString("bucket"),
-                new Ows(),
-                new OptionalExpression("testphrase")
-                {
-                    new Literal("/"),
-                    new Ows(),
-                    new Headers.QuotedString("test")
-                },
-                new OptionalExpression("paramlist")
-                {
-                    new Rws(),
-                    new Literal("with"),
-                    new CommaList("parameters",Parameter.Syntax)    
-                }
-                
-            };
+       
 
         public async Task<IHttpActionResult> Post(FormDataCollection formData)
         {
@@ -44,17 +20,17 @@ namespace RunscopeSlackApi
 
             // Runscope: Run HttpCheck with x=y
 
-            var parseNodes = CommandSyntax.Consume(new Inputdata(text.ToLowerInvariant()));
+            var parseNodes = RunscopeCommand.Syntax.Consume(new Inputdata(text.ToLowerInvariant()));
 
             var verb = parseNodes.ChildNode("verb");
             switch (verb.Text)
             {
                 case "run":
                     var clientState = new ClientState(HttpClientFactory.CreateHttpClient(Request.GetPrivateData()));        
-                    var runCommand = new RunCommand(parseNodes,clientState);
+                    var runCommand = new RunCommand(parseNodes);
                     try
                     {
-                        await runCommand.Execute();
+                        await runCommand.Execute(clientState);
                         return new SlackResult(runCommand.Output);
                     }
                     catch (Exception ex)
