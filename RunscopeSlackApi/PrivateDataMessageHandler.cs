@@ -31,13 +31,13 @@ namespace RunscopeSlackApi
             _enabled = !File.Exists(_configFilePath);
         }
 
-        protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
+        protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, 
+                                                                     CancellationToken cancellationToken) {
             request.Properties[PrivateDataFileKey] = _configFilePath;  // Make available to rest of app
 
             if (!_enabled) return await base.SendAsync(request,cancellationToken);
             
-            // Match any inbound request to display HTML form... Maybe check Accept header for text/html
+            // Match any inbound request to display HTML form...                  Maybe check Accept header for text/html
             if (request.RequestUri.AbsolutePath != _magicPath ) {
                 return CreatePrivateDataForm();
             }
