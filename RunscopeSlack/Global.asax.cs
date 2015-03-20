@@ -23,6 +23,7 @@ namespace RunscopeSlack
 
             var config = GlobalConfiguration.Configuration;
 
+            var privateDataHandler = new PrivateDataMessageHandler(Server.MapPath("~/App_Data/privatedata.json"));
             config.MessageHandlers.Add(privateDataHandler);
             
             WebApiConfig.Register(GlobalConfiguration.Configuration);
