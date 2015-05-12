@@ -4,16 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
 
 namespace RunscopeSlackApi
 {
     public static class HttpClientFactory
     {
-        public static HttpClient CreateHttpClient(PrivateData privateData)
+        public static HttpClient CreateRunscopeHttpClient(PrivateData privateData)
         {
         
             var client = new HttpClient()
@@ -23,6 +20,19 @@ namespace RunscopeSlackApi
 
             client.DefaultRequestHeaders.Authorization
                 = new AuthenticationHeaderValue("bearer", privateData.RunscopeApiKey);
+            return client;
+
+        }
+
+        public static HttpClient CreateSlackHttpClient()
+        {
+
+            var client = new HttpClient()
+            {
+            };
+
+            //client.DefaultRequestHeaders.Authorization
+            //    = new AuthenticationHeaderValue("bearer", privateData.RunscopeApiKey);
             return client;
 
         }

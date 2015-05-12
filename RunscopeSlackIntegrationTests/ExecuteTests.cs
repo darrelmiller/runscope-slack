@@ -19,7 +19,7 @@ namespace RunscopeSlackApiTests
         public async Task ShowBucketsCommand()
         {
 
-            var state = new ClientState(HttpClientFactory.CreateHttpClient(new PrivateData() { RunscopeApiKey = testRunscopeApiKey }));
+            var state = new ClientState(HttpClientFactory.CreateRunscopeHttpClient(new PrivateData() { RunscopeApiKey = testRunscopeApiKey }));
             var cmd = new ShowCommand("buckets");
             await cmd.Execute(state);
             Debug.WriteLine(cmd.Output);
@@ -30,7 +30,7 @@ namespace RunscopeSlackApiTests
         public async Task ShowTestsCommand()
         {
 
-            var state = new ClientState(HttpClientFactory.CreateHttpClient(new PrivateData() { RunscopeApiKey = testRunscopeApiKey }));
+            var state = new ClientState(HttpClientFactory.CreateRunscopeHttpClient(new PrivateData() { RunscopeApiKey = testRunscopeApiKey }));
             var cmd = new ShowCommand("tests in Design UI Testing");
             await cmd.Execute(state);
             Debug.WriteLine(cmd.Output);
@@ -42,7 +42,7 @@ namespace RunscopeSlackApiTests
         public async Task RunTestCommand()
         {
 
-            var state = new ClientState(HttpClientFactory.CreateHttpClient(new PrivateData() { RunscopeApiKey = testRunscopeApiKey }));
+            var state = new ClientState(HttpClientFactory.CreateRunscopeHttpClient(new PrivateData() { RunscopeApiKey = testRunscopeApiKey }));
             var cmd = new RunCommand("APIExamples/Bing Api");
             await cmd.Execute(state);
             Debug.WriteLine(cmd.Output);

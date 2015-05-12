@@ -21,7 +21,7 @@ namespace RunscopeSlackApi
                 return new SlackResult("Command not recognized");
             }
 
-            var clientState = new ClientState(HttpClientFactory.CreateHttpClient(Request.GetPrivateData()));
+            var clientState = new ClientState(HttpClientFactory.CreateRunscopeHttpClient(Request.GetPrivateData()));
             try
             {
                 await cmd.Execute(clientState);

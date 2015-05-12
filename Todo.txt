@@ -4,3 +4,4 @@
 - Work on room affinity. Sending a command from a room should generate a response back to the same room.
 - Improve output formatting and content.
 - Add command to show test results
+- Fix code that Runscopifies URLs to be configurable
