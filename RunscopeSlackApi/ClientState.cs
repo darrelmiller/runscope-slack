@@ -27,7 +27,7 @@ namespace RunscopeSlackApi
 
         internal TestsLink GetBucketTestsLinkByBucketName(string bucketName)
         {
-            var bucket = BucketList.First(b => string.Compare(b.Name,bucketName,StringComparison.CurrentCultureIgnoreCase) == 0);
+            var bucket = BucketList.FirstOrDefault(b => string.Compare(b.Name,bucketName,StringComparison.CurrentCultureIgnoreCase) == 0);
             if (bucket == null) throw new Exception("Cannot find bucket named " + bucketName);
             return bucket.Tests;
 

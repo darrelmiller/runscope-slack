@@ -1,0 +1,2 @@
+#Runscope Slack Bot	
+This project contains a Web API that can connected to a Runscope account and then handle outgoing webhooks from Slack and fire inbound webhooks.  This enables Slack users to interact with their Runscope account from a Slack room. 

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Runscope;
 
 namespace RunscopeSlackApi
 {
@@ -29,7 +30,9 @@ namespace RunscopeSlackApi
             var data = new[] { new KeyValuePair<string, string>("payload", jText.ToString()) };
 
             var privateData = Request.GetPrivateData();
-            await httpClient.PostAsync(privateData.SlackNotifyUrl, new FormUrlEncodedContent(data));
+
+
+            await httpClient.PostAsync(new Uri(privateData.SlackNotifyUrl).ToRunscopeUrl("t6so3gtoys0d"), new FormUrlEncodedContent(data));
 
             return Ok();
         }

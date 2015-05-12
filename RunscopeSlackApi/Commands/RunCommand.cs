@@ -1,60 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Text;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LinkTests;
+using Runscope;
 using Runscope.Links;
 using Tavis.Headers.Elements;
-using Tavis.Parser;
 
-namespace RunscopeSlackApi
+namespace RunscopeSlackApi.Commands
 {
-    public class RunCommand
+    public class RunCommand : IRunscopeCommand
     {
-        
+        private static Regex _BucketTestRegex = new Regex(@"(?<Bucket>[\w\s]+)(?:/(?<Test>.+))?");
+        private static Regex _ParametersRegex = new Regex(@"(?:(?<name>[\w\s]+)=(?<value>[^,]+))");
+
+        public string Name { get { return "run"; } }
+        public static string Description { get { return "Executes a test"; } }
+        public static string Syntax { get { return "run <BucketName>/[<TestName>] [with <param>=<value>[,<param>=<value>]*]"; } }
+
         public string BucketName { get; set; }
         public string TestName { get; set; }
         public List<Parameter> Parameters { get; set; }
+        
+        public RunCommand(string parameters) {
 
+            string bucketTest = null;
+            var paramstart = parameters.IndexOf(" with "); 
+            bucketTest = paramstart > 0 ? parameters.Substring(0, paramstart) : parameters;
+            var bucketTestMatch = _BucketTestRegex.Match(bucketTest);
 
-        public RunCommand(ParseNode commandNode)
-        {
-            Parameters = new List<Parameter>();
-            foreach (var childNode in commandNode.ChildNodes)
+            BucketName = bucketTestMatch.Groups["Bucket"].Value.Trim();
+            var testMatch = bucketTestMatch.Groups["Test"];
+            if (testMatch != null)
             {
-                if (childNode.Present)
-                {
-                    switch (childNode.Expression.Identifier)
-                    {
-                        case "tbucket":
-                        case "qbucket":
-                            BucketName = childNode.Text;
-                            break;
-                        case "testphrase":
-                            if (childNode.ChildNode("qtest") != null)
-                            {
-                                TestName = childNode.ChildNode("qtest").Text;
-                            }
-                            else
-                            {
-                                TestName = childNode.ChildNode("ttest").Text;
-                            }
-                            break;
-                        case "paramlist":
-                            if (childNode.ChildNodes != null)
-                            {
-                                Parameters = childNode.ChildNode("parameters").ChildNodes
-                                    .Select(Parameter.Create).ToList();
-                            }
-                            break;
+                TestName = testMatch.Value.Trim();
+            }
 
-                    }
-                }
+            if (paramstart > 0)
+            {
+
+                Parameters = _ParametersRegex.Matches(parameters.Substring(paramstart + 6))
+                    .Cast<Match>()
+                    .Select(paramPair => new Parameter
+                        {
+                            Name = paramPair.Groups["name"].Value.Trim(),
+                            Value = paramPair.Groups["value"].Value.Trim()
+                        }).ToList();
+                    
             }
-            }
+        }
 
         public async Task Execute(ClientState clientState)
         {
@@ -84,17 +80,24 @@ namespace RunscopeSlackApi
 
         private async Task RunTest(ClientState clientState, TestTriggerLink triggerLink)
         {
+
+            var notifyUrl = new Uri("https://runscope-slack.azurewebsites.net/notify"); // Currently fails if callback url has a dash .ToRunscopeUrl("t6so3gtoys0d");
             
-            var triggerparams = new Dictionary<string, string>
-            {{"runscope_notification_url", "https://runscope-slack.azurewebsites.net/notify"}};
+            var triggerparams = new Dictionary<string, string> { { "runscope_notification_url", notifyUrl.OriginalString} };
 
-            // Apply parameters to triggerLink
-            foreach (var parameter in Parameters)
+
+            if (Parameters != null)
             {
-                triggerparams.Add(parameter.Name, parameter.Value);
+                // Apply parameters to triggerLink
+                foreach (var parameter in Parameters)
+                {
+                    triggerparams.Add(parameter.Name, parameter.Value);
+                }
             }
-            triggerLink.Target = triggerLink.Target.AddToQuery(triggerparams);
 
+            var triggerUrl = triggerLink.Target.AddToQuery(triggerparams);
+            triggerLink.Target = triggerUrl.ToRunscopeUrl("t6so3gtoys0d");
+            triggerLink.Method = HttpMethod.Get; // Flip to a GET for the moment as POST isn't notifying at the moment.
             await clientState.FollowLinkAsync(triggerLink);
 
         }

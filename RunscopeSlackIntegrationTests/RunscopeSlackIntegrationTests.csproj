@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{72751AC3-325F-4646-AE81-25F8FD24A3F6}</ProjectGuid>
+    <ProjectGuid>{F5D357BD-0376-4FAF-9224-C26BE07303F2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RunscopeSlackApiTests</RootNamespace>
-    <AssemblyName>RunscopeSlackApiTests</AssemblyName>
+    <RootNamespace>RunscopeSlackIntegrationTests</RootNamespace>
+    <AssemblyName>RunscopeSlackIntegrationTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>013b852a</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>5fc8e967</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,8 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Microsoft.Threading.Tasks">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks.Extensions">
@@ -61,18 +60,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tavis.HttpHeaders">
-      <HintPath>..\lib\Tavis.HttpHeaders.dll</HintPath>
-    </Reference>
-    <Reference Include="Tavis.Link, Version=0.1.5520.30303, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Tavis.Link">
       <HintPath>..\packages\Tavis.Link.2.0.4-beta2\lib\portable-net45+sl5+wp8+win8+wpa81+MonoTouch1+MonoAndroid1\Tavis.Link.dll</HintPath>
     </Reference>
-    <Reference Include="Tavis.Parser">
-      <HintPath>..\lib\Tavis.Parser.dll</HintPath>
-    </Reference>
-    <Reference Include="Tavis.UriTemplates, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Tavis.UriTemplates">
       <HintPath>..\packages\Tavis.UriTemplates.0.6.3\lib\Net45\Tavis.UriTemplates.dll</HintPath>
     </Reference>
     <Reference Include="xunit">
@@ -80,10 +71,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandFactoryTests.cs" />
-    <Compile Include="HelpCommandTests.cs" />
-    <Compile Include="RunCommandTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ExecuteTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

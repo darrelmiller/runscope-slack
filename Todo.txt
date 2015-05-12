@@ -1,0 +1,6 @@
+- Create Readme File
+- Create build proj and move to Appveyor CI
+- Improve/document the deployment experience.
+- Work on room affinity. Sending a command from a room should generate a response back to the same room.
+- Improve output formatting and content.
+- Add command to show test results

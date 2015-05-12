@@ -1,53 +1,37 @@
 ﻿using System;
-using System.Net.Http;
 using System.Net.Http.Formatting;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Tavis.Parser;
+
 
 namespace RunscopeSlackApi
 {
     public class ActionController : ApiController
     {
-       // test update
 
         public async Task<IHttpActionResult> Post(FormDataCollection formData)
         {
             
             var text = formData["text"];
 
-            // Runscope: Run HttpCheck with x=y
+            var cmd = new CommandFactory().CreateCommand(text);
 
-            var parseNodes = RunscopeCommand.Syntax.Consume(new Inputdata(text.ToLowerInvariant()));
-
-            var verb = parseNodes.ChildNode("verb");
-            switch (verb.Text)
+            if (cmd == null)
             {
-                case "run":
-                    var clientState = new ClientState(HttpClientFactory.CreateHttpClient(Request.GetPrivateData()));        
-                    var runCommand = new RunCommand(parseNodes);
-                    try
-                    {
-                        await runCommand.Execute(clientState);
-                        return new SlackResult(runCommand.Output);
-                    }
-                    catch (Exception ex)
-                    {
-                        return new SlackResult("Run command failed - " + (!String.IsNullOrEmpty(runCommand.Output)  ? runCommand.Output : ex.Message ));
-                        
-                    }
-                    break;
-                            
-                default:
-                    return new SlackResult("Command " + verb.Text + " not recognized");
+                return new SlackResult("Command not recognized");
             }
-            
 
-           
+            var clientState = new ClientState(HttpClientFactory.CreateHttpClient(Request.GetPrivateData()));
+            try
+            {
+                await cmd.Execute(clientState);
+                return new SlackResult(cmd.Output);
+            }
+            catch (Exception ex)
+            {
+                return new SlackResult("Command failed - " + (!String.IsNullOrEmpty(cmd.Output) ? cmd.Output : ex.Message));
+
+            }
         }
-
-        
     }
 }
