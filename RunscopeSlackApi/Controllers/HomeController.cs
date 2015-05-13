@@ -2,6 +2,7 @@
 using System.Web.Http;
 using System.Web.Http.Results;
 using Newtonsoft.Json.Linq;
+using RunscopeSlackApi.Views;
 
 namespace RunscopeSlackApi
 {
